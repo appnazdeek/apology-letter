@@ -7,29 +7,147 @@
   <link href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&family=Crafty+Girls&family=Kalam:wght@300;400;700&family=Lilita+One&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { height: 100%; }
 
     body {
       background-color: rgb(255, 216, 235);
       display: flex;
       justify-content: center;
+      align-items: center;
       height: 100dvh;
       height: 100vh;
       overflow: hidden;
       font-family: 'Kalam', 'Noto Sans Devanagari', cursive;
+      position: relative;
     }
 
-    .card {
-      width: 100%;
-      max-width: 620px;
+    /* ════════════════════════════
+       FLOATING PETALS BACKGROUND
+    ════════════════════════════ */
+    .petals-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .petal {
+      position: absolute;
+      top: -40px;
+      font-size: 1.1rem;
+      opacity: 0;
+      animation: floatDown linear infinite;
+      user-select: none;
+    }
+    @keyframes floatDown {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.55; }
+      90%  { opacity: 0.4; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ════════════════════════════
+       SCREENS
+    ════════════════════════════ */
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      z-index: 1;
+    }
+    .screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.97);
+    }
+
+    /* ════════════════════════════
+       INTRO SCREEN
+    ════════════════════════════ */
+    #introScreen {
+      padding: 30px 24px;
+      text-align: center;
+      gap: 0;
+    }
+
+    .intro-ghost {
+      width: 130px;
+      animation: ghostFloat 3s ease-in-out infinite;
+      filter: drop-shadow(0 8px 16px rgba(214,63,123,0.2));
+      margin-bottom: 6px;
+    }
+    @keyframes ghostFloat {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+
+    .intro-tag {
+      font-family: 'Crafty Girls', cursive;
+      font-size: 1rem;
+      color: #d63f7b;
+      opacity: 0.7;
+      margin-bottom: 14px;
+      animation: fadeInUp 0.8s ease 0.3s both;
+    }
+
+    .intro-title {
+      font-family: 'Lilita One', cursive;
+      font-size: 2rem;
+      color: #c0396d;
+      line-height: 1.3;
+      margin-bottom: 10px;
+      animation: fadeInUp 0.8s ease 0.5s both;
+    }
+
+    .intro-sub {
+      font-family: 'Kalam', cursive;
+      font-size: 1rem;
+      color: #7a4a5a;
+      margin-bottom: 36px;
+      line-height: 1.6;
+      animation: fadeInUp 0.8s ease 0.7s both;
+    }
+
+    .intro-btn {
+      background: #d63f7b;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 38px;
+      font-family: 'Lilita One', cursive;
+      font-size: 1.15rem;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(214,63,123,0.35);
+      animation: fadeInUp 0.8s ease 1s both, pulse 2s ease-in-out 2s infinite;
+      transition: transform 0.15s;
+    }
+    .intro-btn:active { transform: scale(0.96); }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 6px 20px rgba(214,63,123,0.35); }
+      50%       { box-shadow: 0 8px 28px rgba(214,63,123,0.55); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ════════════════════════════
+       LETTER SCREEN
+    ════════════════════════════ */
+    #letterScreen {
+      position: absolute;
+      inset: 0;
       display: flex;
       flex-direction: column;
       padding: max(env(safe-area-inset-top), 16px) 16px max(env(safe-area-inset-bottom), 12px);
-      overflow: hidden;
+      transition: opacity 0.6s ease;
     }
+    #letterScreen.hidden { opacity: 0; pointer-events: none; }
 
-    /* ── TOP ── */
     .top-area {
       display: flex;
       align-items: center;
@@ -37,14 +155,12 @@
       flex-shrink: 0;
       padding-bottom: 8px;
     }
-
     .sticker-top {
       width: 88px;
       flex-shrink: 0;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.08));
     }
-
     .headline-box {
       background: white;
       border-radius: 16px;
@@ -52,23 +168,19 @@
       box-shadow: 0 2px 12px rgba(0,0,0,0.07);
       flex: 1;
     }
-
     .headline-box p {
-      /* Crafty Girls for the headline */
       font-family: 'Crafty Girls', cursive;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       color: #c0396d;
       line-height: 1.55;
     }
 
-    /* ── SKIP ── */
     .skip-wrap {
       display: flex;
       justify-content: flex-end;
       padding: 5px 0 6px;
       flex-shrink: 0;
     }
-
     .skip-btn {
       background: transparent;
       border: 1.5px solid #d63f7b;
@@ -76,7 +188,7 @@
       border-radius: 50px;
       padding: 3px 14px;
       font-family: 'Kalam', cursive;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 700;
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
@@ -84,7 +196,6 @@
     .skip-btn:hover, .skip-btn:active { background: #d63f7b; color: white; }
     .skip-btn.hidden { visibility: hidden; pointer-events: none; }
 
-    /* ── SCROLLABLE LETTER ── */
     .letter-scroll {
       flex: 1;
       overflow-y: auto;
@@ -105,7 +216,6 @@
       margin-bottom: 12px;
       padding: 0 2px;
     }
-
     .para-block {
       display: flex;
       align-items: flex-start;
@@ -116,7 +226,6 @@
       padding: 0 2px;
     }
     .para-block.visible { opacity: 1; }
-
     .bullet-dot {
       flex-shrink: 0;
       width: 6px; height: 6px;
@@ -124,7 +233,6 @@
       border-radius: 50%;
       margin-top: 10px;
     }
-
     .para-text {
       font-family: 'Kalam', 'Noto Sans Devanagari', cursive;
       font-size: 0.97rem;
@@ -133,7 +241,6 @@
       line-height: 1.9;
       flex: 1;
     }
-
     .letter-sign {
       opacity: 0;
       transition: opacity 0.4s;
@@ -147,8 +254,7 @@
 
     .cursor {
       display: inline-block;
-      width: 2px;
-      height: 1em;
+      width: 2px; height: 1em;
       background: #d63f7b;
       margin-left: 1px;
       vertical-align: middle;
@@ -159,7 +265,6 @@
       50%       { opacity: 0; }
     }
 
-    /* ── BOTTOM ── */
     .bottom-area {
       display: flex;
       justify-content: flex-end;
@@ -171,73 +276,200 @@
       margin-top: 4px;
       min-height: 68px;
     }
-
     .sticker-bottom {
       width: 56px;
       object-fit: contain;
       filter: drop-shadow(0 3px 6px rgba(0,0,0,0.08));
     }
-
-    /* Corinthia signature font for handle */
     .handle-text {
       font-family: 'Corinthia', cursive;
       font-size: 1.9rem;
       font-weight: 700;
       color: #c0396d;
       line-height: 1;
-      letter-spacing: 0.5px;
+    }
+
+    /* ════════════════════════════
+       OUTRO SCREEN
+    ════════════════════════════ */
+    #outroScreen {
+      padding: 30px 28px;
+      text-align: center;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .outro-hearts {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+      animation: heartPop 0.6s ease both;
+    }
+    @keyframes heartPop {
+      0%   { transform: scale(0); opacity: 0; }
+      70%  { transform: scale(1.15); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .outro-ghost {
+      width: 90px;
+      margin-bottom: 16px;
+      animation: ghostFloat 3s ease-in-out infinite;
+      filter: drop-shadow(0 6px 14px rgba(214,63,123,0.2));
+    }
+
+    .outro-title {
+      font-family: 'Lilita One', cursive;
+      font-size: 1.6rem;
+      color: #c0396d;
+      margin-bottom: 12px;
+      animation: fadeInUp 0.7s ease 0.2s both;
+    }
+
+    .outro-msg {
+      font-family: 'Kalam', 'Noto Sans Devanagari', cursive;
+      font-size: 1rem;
+      color: #6a3a4a;
+      line-height: 1.75;
+      margin-bottom: 28px;
+      animation: fadeInUp 0.7s ease 0.4s both;
+    }
+
+    .outro-flowers {
+      font-size: 1.6rem;
+      letter-spacing: 6px;
+      animation: fadeInUp 0.7s ease 0.6s both;
+      margin-bottom: 24px;
+    }
+
+    .outro-sign {
+      font-family: 'Corinthia', cursive;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #d63f7b;
+      animation: fadeInUp 0.7s ease 0.8s both;
+    }
+
+    /* floating hearts on outro */
+    .float-heart {
+      position: fixed;
+      font-size: 1.4rem;
+      pointer-events: none;
+      animation: floatHeart 3s ease-out forwards;
+      z-index: 10;
+    }
+    @keyframes floatHeart {
+      0%   { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-120px) scale(0.5); }
     }
   </style>
 </head>
 <body>
-<div class="card">
 
-  <!-- TOP -->
-  <div class="top-area">
-    <img class="sticker-top"
+  <!-- FLOATING PETALS -->
+  <div class="petals-container" id="petalsContainer"></div>
+
+  <!-- ══ INTRO ══ -->
+  <div class="screen" id="introScreen">
+    <img class="intro-ghost"
       src="https://raw.githubusercontent.com/appnazdeek/apology-letter/main/one.png"
-      alt="sorry ghost" />
-    <div class="headline-box">
-      <p>A heartfelt sorry,<br/>I meant no hurt.</p>
+      alt="ghost" />
+    <p class="intro-tag">एक छोटी सी बात...</p>
+    <h1 class="intro-title">दिल से एक<br/>ज़रूरी बात 💌</h1>
+    <p class="intro-sub">
+      कुछ बातें जो मन में थीं,<br/>
+      आज कहनी हैं आपसे।
+    </p>
+    <button class="intro-btn" id="startBtn">पढ़ें ✨</button>
+  </div>
+
+  <!-- ══ LETTER ══ -->
+  <div class="screen hidden" id="letterScreen">
+    <div class="top-area">
+      <img class="sticker-top"
+        src="https://raw.githubusercontent.com/appnazdeek/apology-letter/main/one.png"
+        alt="sorry ghost" />
+      <div class="headline-box">
+        <p>A heartfelt sorry,<br/>I meant no hurt.</p>
+      </div>
+    </div>
+
+    <div class="skip-wrap">
+      <button class="skip-btn" id="skipBtn">Skip ⏭</button>
+    </div>
+
+    <div class="letter-scroll" id="letterScroll">
+      <p class="salutation">नमस्ते आंटी जी,</p>
+
+      <div class="para-block" id="p0"><span class="bullet-dot"></span><span class="para-text" id="t0"></span></div>
+      <div class="para-block" id="p1"><span class="bullet-dot"></span><span class="para-text" id="t1"></span></div>
+      <div class="para-block" id="p2"><span class="bullet-dot"></span><span class="para-text" id="t2"></span></div>
+      <div class="para-block" id="p3"><span class="bullet-dot"></span><span class="para-text" id="t3"></span></div>
+      <div class="para-block" id="p4"><span class="bullet-dot"></span><span class="para-text" id="t4"></span></div>
+      <div class="para-block" id="p5"><span class="bullet-dot"></span><span class="para-text" id="t5"></span></div>
+      <div class="para-block" id="p6"><span class="bullet-dot"></span><span class="para-text" id="t6"></span></div>
+      <div class="para-block" id="p7"><span class="bullet-dot"></span><span class="para-text" id="t7"></span></div>
+      <div class="para-block" id="p8"><span class="bullet-dot"></span><span class="para-text" id="t8"></span></div>
+      <div class="para-block" id="p9"><span class="bullet-dot"></span><span class="para-text" id="t9"></span></div>
+      <div class="para-block" id="p10"><span class="bullet-dot"></span><span class="para-text" id="t10"></span></div>
+
+      <div class="letter-sign" id="letterSign">
+        धन्यवाद,<br/>राकेश
+      </div>
+    </div>
+
+    <div class="bottom-area">
+      <img class="sticker-bottom"
+        src="https://raw.githubusercontent.com/appnazdeek/apology-letter/main/two.png"
+        alt="ghost with flower" />
+      <span class="handle-text">@rakeshsingh.tce</span>
     </div>
   </div>
 
-  <!-- SKIP -->
-  <div class="skip-wrap">
-    <button class="skip-btn" id="skipBtn">Skip ⏭</button>
-  </div>
-
-  <!-- LETTER -->
-  <div class="letter-scroll" id="letterScroll">
-    <p class="salutation">नमस्ते आंटी जी, मैं राकेशसिंह</p>
-
-    <div class="para-block" id="p0"><span class="bullet-dot"></span><span class="para-text" id="t0"></span></div>
-    <div class="para-block" id="p1"><span class="bullet-dot"></span><span class="para-text" id="t1"></span></div>
-    <div class="para-block" id="p2"><span class="bullet-dot"></span><span class="para-text" id="t2"></span></div>
-    <div class="para-block" id="p3"><span class="bullet-dot"></span><span class="para-text" id="t3"></span></div>
-    <div class="para-block" id="p4"><span class="bullet-dot"></span><span class="para-text" id="t4"></span></div>
-    <div class="para-block" id="p5"><span class="bullet-dot"></span><span class="para-text" id="t5"></span></div>
-    <div class="para-block" id="p6"><span class="bullet-dot"></span><span class="para-text" id="t6"></span></div>
-    <div class="para-block" id="p7"><span class="bullet-dot"></span><span class="para-text" id="t7"></span></div>
-    <div class="para-block" id="p8"><span class="bullet-dot"></span><span class="para-text" id="t8"></span></div>
-    <div class="para-block" id="p9"><span class="bullet-dot"></span><span class="para-text" id="t9"></span></div>
-
-    <div class="letter-sign" id="letterSign">
-      धन्यवाद,<br/>राकेश
-    </div>
-  </div>
-
-  <!-- BOTTOM -->
-  <div class="bottom-area">
-    <img class="sticker-bottom"
+  <!-- ══ OUTRO ══ -->
+  <div class="screen hidden" id="outroScreen">
+    <div class="outro-hearts">💗</div>
+    <img class="outro-ghost"
       src="https://raw.githubusercontent.com/appnazdeek/apology-letter/main/two.png"
-      alt="ghost with flower" />
-    <span class="handle-text">@rakeshsingh.tce</span>
+      alt="ghost" />
+    <h2 class="outro-title">सब ठीक हो जाएगा 🌸</h2>
+    <p class="outro-msg">
+      आपके घर में खुशियाँ हों,<br/>
+      आपके परिवार में हमेशा<br/>
+      मुस्कुराहट बनी रहे।<br/><br/>
+      यह छोटी सी कोशिश थी<br/>
+      मन की बात पहुँचाने की। 🙏
+    </p>
+    <div class="outro-flowers">🌸 🌼 🌸</div>
+    <div class="outro-sign">@rakeshsingh.tce</div>
   </div>
-
-</div>
 
 <script>
+  // ── Petals ──
+  const petalEmojis = ['🌸','🌼','✿','❀','💮'];
+  const container = document.getElementById('petalsContainer');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('span');
+    p.className = 'petal';
+    p.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+    p.style.left = Math.random() * 100 + '%';
+    p.style.fontSize = (0.7 + Math.random() * 0.8) + 'rem';
+    p.style.animationDuration = (6 + Math.random() * 10) + 's';
+    p.style.animationDelay = (Math.random() * 12) + 's';
+    container.appendChild(p);
+  }
+
+  // ── Screen transitions ──
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+  }
+
+  document.getElementById('startBtn').addEventListener('click', () => {
+    showScreen('letterScreen');
+    setTimeout(() => typeParagraph(0), 400);
+  });
+
+  // ── Letter ──
   const parts = [
     "सबसे पहले मैं आपसे दिल से माफी मांगना चाहता हूँ। कुछ महीने पहले मेरे इंस्टाग्राम अकाउंट पर एक AI-generated फोटो थी जिसमें आपकी बेटी की फोटो का इस्तेमाल हो गया था। मुझे समझ है कि यह चीज आपको बिल्कुल अच्छी नहीं लगी होगी और इससे आपको गुस्सा या असहज महसूस हुआ होगा। इसके लिए मैं sincerely आपसे sorry कहना चाहता हूँ।",
     "मैं एक बात साफ करना चाहता हूँ कि मेरा intention बिल्कुल भी गलत नहीं था। वह फोटो मैंने कहीं भी publicly share नहीं की थी। मेरा Instagram account private है और वहाँ practically कोई और access भी नहीं था। वह बस मेरे अकाउंट पर एक पोस्ट के रूप में पड़ी हुई थी। फिर भी अगर उस वजह से आपको या आपके परिवार को बुरा लगा, तो उसकी पूरी responsibility मैं लेता हूँ और उसके लिए दिल से माफी मांगता हूँ।",
@@ -248,34 +480,27 @@
     "एक और बात मैं बिल्कुल साफ करना चाहता हूँ। फिलहाल मेरा ऐसा कोई plan नहीं है कि मैं अभी किसी relationship के बारे में बात करूँ या किसी को किसी तरह की परेशानी में डालूँ। अभी मेरी priority सिर्फ अपना career बनाना, अपने परिवार की स्थिति को बेहतर करना और खुद को financially और personally strong बनाना है।",
     "इसलिए अभी मैं सिर्फ अपनी गलती के लिए आपसे माफी मांगना चाहता हूँ। भविष्य में जब मैं अपनी life में stable हो जाऊँगा, अपने काम में successful हो जाऊँगा और जब समय सही होगा, तभी मैं किसी भी बात को लेकर आगे सोचूँगा। अभी के समय में मेरा focus सिर्फ मेहनत करना और खुद को बेहतर बनाना है।",
     "आंटी जी, अगर मेरे इस message में लिखी किसी भी बात से आपको बुरा लगे या आपको ऐसा लगे कि मुझे यह message नहीं भेजना चाहिए था, तो उसके लिए भी मैं पहले से ही माफी चाहता हूँ। मेरा मकसद सिर्फ इतना है कि आपके मन में अगर मेरे लिए कोई गलतफहमी बन गई है तो उसे clear कर सकूँ।",
-    "आपका गुस्सा बिल्कुल समझ में आता है और आपकी जगह कोई भी माता-पिता होते तो शायद वही महसूस करते। इसलिए मैं एक बार फिर sincerely आपसे sorry कहना चाहता हूँ।"
+    "आपका गुस्सा बिल्कुल समझ में आता है और आपकी जगह कोई भी माता-पिता होते तो शायद वही महसूस करते। इसलिए मैं एक बार फिर sincerely आपसे sorry कहना चाहता हूँ।",
+    "उम्मीद है कि आगे चलकर सब ठीक हो जाएगा और आपके मन में कोई गिला-शिकवा नहीं रहेगा। आपके घर में हमेशा खुशियाँ बनी रहें — यही मेरी दिल से दुआ है। 🌸"
   ];
 
   const TOTAL = parts.length;
-  let isTyping = true;
+  let isTyping = false;
   let typeTimeout = null;
   const scroll = document.getElementById('letterScroll');
 
-  // ── Scroll control logic ──
-  // userTouching = finger is currently on screen
-  // autoScrollEnabled = should we auto-scroll on each tick
-  let userTouching = false;
   let autoScrollEnabled = true;
+  let userTouching = false;
+  let wheelTimer = null;
 
-  // Touch start → immediately stop auto-scroll
   scroll.addEventListener('touchstart', () => {
     userTouching = true;
     autoScrollEnabled = false;
   }, { passive: true });
-
-  // Touch end → resume auto-scroll (no jump, typing continues from where it is)
   scroll.addEventListener('touchend', () => {
     userTouching = false;
     autoScrollEnabled = true;
   }, { passive: true });
-
-  // Desktop mouse wheel → stop while scrolling, resume after 1s idle
-  let wheelTimer = null;
   scroll.addEventListener('wheel', () => {
     autoScrollEnabled = false;
     clearTimeout(wheelTimer);
@@ -283,8 +508,7 @@
   }, { passive: true });
 
   function autoScroll() {
-    if (!autoScrollEnabled) return;
-    scroll.scrollTop = scroll.scrollHeight;
+    if (autoScrollEnabled) scroll.scrollTop = scroll.scrollHeight;
   }
 
   function showAllInstant() {
@@ -300,10 +524,33 @@
     }
     document.getElementById('letterSign').classList.add('visible');
     scroll.scrollTop = scroll.scrollHeight;
+    setTimeout(showOutro, 800);
+  }
+
+  // Floating hearts burst on outro
+  function burstHearts() {
+    const emojis = ['💗','🌸','✨','💕','🌼'];
+    for (let i = 0; i < 12; i++) {
+      setTimeout(() => {
+        const h = document.createElement('span');
+        h.className = 'float-heart';
+        h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        h.style.left = (15 + Math.random() * 70) + '%';
+        h.style.bottom = (10 + Math.random() * 40) + '%';
+        h.style.animationDelay = (Math.random() * 0.5) + 's';
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 3500);
+      }, i * 120);
+    }
+  }
+
+  function showOutro() {
+    showScreen('outroScreen');
+    burstHearts();
   }
 
   function typeParagraph(idx) {
-    if (!isTyping) return;
+    isTyping = true;
     if (idx >= TOTAL) {
       const lastText = document.getElementById('t' + (TOTAL - 1));
       const cur = lastText.querySelector('.cursor');
@@ -311,6 +558,7 @@
       document.getElementById('skipBtn').classList.add('hidden');
       document.getElementById('letterSign').classList.add('visible');
       isTyping = false;
+      setTimeout(showOutro, 1800);
       return;
     }
 
@@ -323,26 +571,5 @@
     textEl.innerHTML = '<span class="cursor"></span>';
 
     function tick() {
-      if (!isTyping) return;
       if (charIdx < fullText.length) {
-        textEl.querySelector('.cursor').insertAdjacentText('beforebegin', fullText[charIdx]);
-        charIdx++;
-        const ch = fullText[charIdx - 1];
-        const delay = /[।]/.test(ch) ? 190 : /[,]/.test(ch) ? 90 : /[ ]/.test(ch) ? 28 : 42;
-        typeTimeout = setTimeout(tick, delay);
-        autoScroll();
-      } else {
-        const cur = textEl.querySelector('.cursor');
-        if (cur) cur.remove();
-        typeTimeout = setTimeout(() => typeParagraph(idx + 1), 320);
-      }
-    }
-    tick();
-  }
-
-  document.getElementById('skipBtn').addEventListener('click', showAllInstant);
-  typeParagraph(0);
-</script>
-</body>
-                                                                      </html>
-  
+        textEl.querySelector('.c
