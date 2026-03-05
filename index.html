@@ -169,7 +169,16 @@
       }
     }
 
-    /* GHOST BOUNCE INTERACTION */
+    /* GHOST BOUNCE & INTERACTION */
+    .intro-ghost,
+    .sticker-top,
+    .sticker-bottom,
+    .outro-ghost {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      outline: none;
+    }
+
     .ghost-bounce {
       animation: bounceQuick 0.4s ease !important;
     }
@@ -184,6 +193,16 @@
       50% {
         transform: translateY(-20px) scale(1.1);
       }
+    }
+
+    .mini-ghost {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1050;
+      width: 32px;
+      opacity: 1;
+      filter: drop-shadow(0 4px 8px rgba(214, 63, 123, 0.2));
+      transition: transform 0.6s cubic-bezier(0.15, 0.85, 0.35, 1.2), opacity 0.6s ease-out;
     }
 
     .intro-tag {
@@ -658,9 +677,46 @@
     });
 
     document.querySelectorAll('.intro-ghost, .sticker-top, .sticker-bottom, .outro-ghost').forEach(ghost => {
-      ghost.addEventListener('click', function () {
+      ghost.addEventListener('click', function (e) {
+        // Bounce the main ghost
         this.classList.add('ghost-bounce');
         setTimeout(() => this.classList.remove('ghost-bounce'), 400);
+
+        // Burst mini ghosts
+        const rect = this.getBoundingClientRect();
+        // Uses the click position if available, else element center
+        const clickX = e.clientX || (rect.left + rect.width / 2);
+        const clickY = e.clientY || (rect.top + rect.height / 2);
+        const imgSrc = this.src;
+
+        for (let i = 0; i < 8; i++) {
+          const mini = document.createElement('img');
+          mini.src = imgSrc;
+          mini.className = 'mini-ghost';
+          mini.style.left = clickX + 'px';
+          mini.style.top = clickY + 'px';
+
+          // Initial state before transition
+          mini.style.transform = 'translate(-50%, -50%) scale(0.3)';
+          document.body.appendChild(mini);
+
+          // Force reflow to ensure CSS transition fires
+          mini.getBoundingClientRect();
+
+          // Calculate random spread
+          const angle = Math.random() * Math.PI * 2;
+          const dist = 50 + Math.random() * 60; // Spread distance 50px to 110px
+          const moveX = Math.cos(angle) * dist;
+          const moveY = Math.sin(angle) * dist;
+          const rot = (Math.random() - 0.5) * 120; // Random rotation between -60 and 60 deg
+
+          // Apply transition destination
+          mini.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px)) scale(1) rotate(${rot}deg)`;
+          mini.style.opacity = '0';
+
+          // Cleanup after animation completes
+          setTimeout(() => mini.remove(), 600);
+        }
       });
     });
 
