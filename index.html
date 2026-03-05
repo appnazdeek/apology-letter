@@ -2,22 +2,24 @@
 <html lang="hi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>A Heartfelt Sorry</title>
   <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Lilita+One&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html, body {
+    html {
       height: 100%;
-      overflow: hidden;
     }
 
     body {
       background-color: rgb(255, 216, 235);
       display: flex;
       justify-content: center;
-      align-items: stretch;
+      /* use dvh for mobile browsers — accounts for browser chrome */
+      height: 100dvh;
+      height: 100vh; /* fallback */
+      overflow: hidden;
       font-family: 'Kalam', 'Noto Sans Devanagari', cursive;
     }
 
@@ -26,8 +28,11 @@
       max-width: 620px;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      padding: 20px 16px 16px;
+      /* safe area for notch/home bar phones */
+      padding: env(safe-area-inset-top, 16px) 16px env(safe-area-inset-bottom, 12px);
+      padding-top: max(env(safe-area-inset-top), 16px);
+      padding-bottom: max(env(safe-area-inset-bottom), 12px);
+      overflow: hidden;
     }
 
     /* ── TOP ── */
@@ -36,11 +41,11 @@
       align-items: center;
       gap: 12px;
       flex-shrink: 0;
-      padding-bottom: 10px;
+      padding-bottom: 8px;
     }
 
     .sticker-top {
-      width: 95px;
+      width: 88px;
       flex-shrink: 0;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.08));
@@ -48,25 +53,24 @@
 
     .headline-box {
       background: white;
-      border-radius: 18px;
-      padding: 13px 18px;
+      border-radius: 16px;
+      padding: 12px 16px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.07);
       flex: 1;
     }
 
     .headline-box p {
       font-family: 'Lilita One', cursive;
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       color: #c0396d;
-      line-height: 1.45;
-      letter-spacing: 0.3px;
+      line-height: 1.4;
     }
 
     /* ── SKIP ── */
     .skip-wrap {
       display: flex;
       justify-content: flex-end;
-      padding: 6px 0 8px;
+      padding: 5px 0 6px;
       flex-shrink: 0;
     }
 
@@ -75,14 +79,14 @@
       border: 1.5px solid #d63f7b;
       color: #d63f7b;
       border-radius: 50px;
-      padding: 4px 16px;
+      padding: 3px 14px;
       font-family: 'Kalam', cursive;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
     }
-    .skip-btn:hover { background: #d63f7b; color: white; }
+    .skip-btn:hover, .skip-btn:active { background: #d63f7b; color: white; }
     .skip-btn.hidden { visibility: hidden; pointer-events: none; }
 
     /* ── SCROLLABLE LETTER ── */
@@ -90,27 +94,28 @@
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 2px 6px 10px;
+      padding: 2px 4px 8px;
       scrollbar-width: thin;
       scrollbar-color: #f4a0c0 transparent;
+      min-height: 0; /* critical for flex shrink */
     }
-    .letter-scroll::-webkit-scrollbar { width: 4px; }
+    .letter-scroll::-webkit-scrollbar { width: 3px; }
     .letter-scroll::-webkit-scrollbar-thumb { background: #f4a0c0; border-radius: 4px; }
 
     .salutation {
       font-family: 'Kalam', 'Noto Sans Devanagari', cursive;
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 700;
       color: #333;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       padding: 0 2px;
     }
 
     .para-block {
       display: flex;
       align-items: flex-start;
-      gap: 9px;
-      margin-bottom: 16px;
+      gap: 8px;
+      margin-bottom: 14px;
       opacity: 0;
       transition: opacity 0.35s;
       padding: 0 2px;
@@ -122,15 +127,15 @@
       width: 6px; height: 6px;
       background: #d63f7b;
       border-radius: 50%;
-      margin-top: 11px;
+      margin-top: 10px;
     }
 
     .para-text {
       font-family: 'Kalam', 'Noto Sans Devanagari', cursive;
-      font-size: 1rem;
+      font-size: 0.97rem;
       font-weight: 400;
       color: #2d2d2d;
-      line-height: 1.95;
+      line-height: 1.9;
       flex: 1;
     }
 
@@ -138,7 +143,7 @@
     .letter-sign {
       opacity: 0;
       transition: opacity 0.4s;
-      padding: 10px 2px 4px;
+      padding: 8px 2px 4px;
       font-family: 'Kalam', cursive;
       font-size: 1rem;
       color: #444;
@@ -161,29 +166,31 @@
       50%       { opacity: 0; }
     }
 
-    /* ── BOTTOM STICKER BAR ── */
+    /* ── BOTTOM — always pinned ── */
     .bottom-area {
       display: flex;
       justify-content: flex-end;
       align-items: center;
       gap: 10px;
-      padding: 10px 6px 0;
+      padding-top: 8px;
       flex-shrink: 0;
-      border-top: 1px solid rgba(214,63,123,0.13);
+      border-top: 1px solid rgba(214,63,123,0.15);
       margin-top: 4px;
+      /* ensure it never gets pushed off */
+      min-height: 70px;
     }
 
     .sticker-bottom {
-      width: 58px;
+      width: 56px;
       object-fit: contain;
       filter: drop-shadow(0 3px 6px rgba(0,0,0,0.08));
     }
 
     .handle-text {
       font-family: 'Lilita One', cursive;
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #c0396d;
-      opacity: 0.75;
+      opacity: 0.8;
     }
   </style>
 </head>
@@ -205,9 +212,9 @@
     <button class="skip-btn" id="skipBtn">Skip ⏭</button>
   </div>
 
-  <!-- LETTER -->
+  <!-- SCROLLABLE LETTER -->
   <div class="letter-scroll" id="letterScroll">
-    <p class="salutation">नमस्ते आंटी जी, मैं राकेश</p>
+    <p class="salutation">नमस्ते आंटी जी, मैं राकेशसिंह</p>
 
     <div class="para-block" id="p0"><span class="bullet-dot"></span><span class="para-text" id="t0"></span></div>
     <div class="para-block" id="p1"><span class="bullet-dot"></span><span class="para-text" id="t1"></span></div>
@@ -220,19 +227,17 @@
     <div class="para-block" id="p8"><span class="bullet-dot"></span><span class="para-text" id="t8"></span></div>
     <div class="para-block" id="p9"><span class="bullet-dot"></span><span class="para-text" id="t9"></span></div>
 
-    <!-- Signature inside letter, shows after last para -->
     <div class="letter-sign" id="letterSign">
-      धन्यवाद,<br/>
-      राकेश
+      धन्यवाद,<br/>राकेश
     </div>
   </div>
 
-  <!-- BOTTOM — only sticker + handle -->
+  <!-- BOTTOM — always visible -->
   <div class="bottom-area">
     <img class="sticker-bottom"
       src="https://raw.githubusercontent.com/appnazdeek/apology-letter/main/two.png"
       alt="ghost with flower" />
-    <span class="handle-text">@rakeshsinghce</span>
+    <span class="handle-text">@rakeshsingh.tce</span>
   </div>
 
 </div>
@@ -256,16 +261,13 @@
   let typeTimeout = null;
   const scroll = document.getElementById('letterScroll');
 
-  // Track if user has manually scrolled
+  // User scroll control
   let userScrolled = false;
+  scroll.addEventListener('touchstart', () => { userScrolled = true; });
+  scroll.addEventListener('wheel', () => { userScrolled = true; });
   scroll.addEventListener('scroll', () => {
-    // if user scrolled up from bottom, mark as user-controlled
-    const atBottom = scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight < 40;
-    if (!atBottom) {
-      userScrolled = true;
-    } else {
-      userScrolled = false;
-    }
+    const atBottom = scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight < 50;
+    if (atBottom) userScrolled = false;
   });
 
   function autoScroll() {
@@ -286,6 +288,7 @@
       document.getElementById('p' + i).classList.add('visible');
     }
     document.getElementById('letterSign').classList.add('visible');
+    scroll.scrollTop = scroll.scrollHeight;
   }
 
   function typeParagraph(idx) {
