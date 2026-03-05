@@ -4,20 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>A Heartfelt Sorry</title>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600&family=Dancing+Script:wght@600;700&family=Caveat:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Lilita+One&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
       height: 100%;
+      overflow: hidden;
     }
 
     body {
       background-color: rgb(255, 216, 235);
       display: flex;
       justify-content: center;
-      padding: 28px 16px 40px;
-      font-family: 'Baloo 2', 'Noto Sans Devanagari', sans-serif;
+      align-items: stretch;
+      font-family: 'Kalam', 'Noto Sans Devanagari', cursive;
     }
 
     .card {
@@ -25,20 +26,21 @@
       max-width: 620px;
       display: flex;
       flex-direction: column;
-      height: calc(100vh - 68px);
+      height: 100vh;
+      padding: 20px 16px 16px;
     }
 
-    /* TOP */
+    /* ── TOP ── */
     .top-area {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding-bottom: 16px;
+      gap: 12px;
       flex-shrink: 0;
+      padding-bottom: 10px;
     }
 
     .sticker-top {
-      width: 105px;
+      width: 95px;
       flex-shrink: 0;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.08));
@@ -47,24 +49,24 @@
     .headline-box {
       background: white;
       border-radius: 18px;
-      padding: 15px 20px;
+      padding: 13px 18px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.07);
       flex: 1;
     }
 
     .headline-box p {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #444;
+      font-family: 'Lilita One', cursive;
+      font-size: 1.35rem;
+      color: #c0396d;
       line-height: 1.45;
+      letter-spacing: 0.3px;
     }
 
-    /* SKIP */
+    /* ── SKIP ── */
     .skip-wrap {
       display: flex;
       justify-content: flex-end;
-      padding-bottom: 8px;
+      padding: 6px 0 8px;
       flex-shrink: 0;
     }
 
@@ -73,9 +75,9 @@
       border: 1.5px solid #d63f7b;
       color: #d63f7b;
       border-radius: 50px;
-      padding: 5px 18px;
-      font-family: 'Caveat', cursive;
-      font-size: 1.05rem;
+      padding: 4px 16px;
+      font-family: 'Kalam', cursive;
+      font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
@@ -83,11 +85,12 @@
     .skip-btn:hover { background: #d63f7b; color: white; }
     .skip-btn.hidden { visibility: hidden; pointer-events: none; }
 
-    /* SCROLLABLE LETTER */
+    /* ── SCROLLABLE LETTER ── */
     .letter-scroll {
       flex: 1;
       overflow-y: auto;
-      padding: 4px 4px 12px;
+      overflow-x: hidden;
+      padding: 2px 6px 10px;
       scrollbar-width: thin;
       scrollbar-color: #f4a0c0 transparent;
     }
@@ -95,42 +98,55 @@
     .letter-scroll::-webkit-scrollbar-thumb { background: #f4a0c0; border-radius: 4px; }
 
     .salutation {
-      font-family: 'Baloo 2', 'Noto Sans Devanagari', sans-serif;
+      font-family: 'Kalam', 'Noto Sans Devanagari', cursive;
       font-size: 1.05rem;
-      font-weight: 600;
+      font-weight: 700;
       color: #333;
-      margin-bottom: 16px;
-      padding: 0 4px;
+      margin-bottom: 14px;
+      padding: 0 2px;
     }
 
     .para-block {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 18px;
+      gap: 9px;
+      margin-bottom: 16px;
       opacity: 0;
       transition: opacity 0.35s;
-      padding: 0 4px;
+      padding: 0 2px;
     }
     .para-block.visible { opacity: 1; }
 
     .bullet-dot {
       flex-shrink: 0;
-      width: 7px; height: 7px;
+      width: 6px; height: 6px;
       background: #d63f7b;
       border-radius: 50%;
-      margin-top: 12px;
+      margin-top: 11px;
     }
 
     .para-text {
-      font-family: 'Baloo 2', 'Noto Sans Devanagari', sans-serif;
-      font-size: 0.97rem;
+      font-family: 'Kalam', 'Noto Sans Devanagari', cursive;
+      font-size: 1rem;
       font-weight: 400;
       color: #2d2d2d;
-      line-height: 2;
+      line-height: 1.95;
       flex: 1;
     }
 
+    /* signature inside letter */
+    .letter-sign {
+      opacity: 0;
+      transition: opacity 0.4s;
+      padding: 10px 2px 4px;
+      font-family: 'Kalam', cursive;
+      font-size: 1rem;
+      color: #444;
+      line-height: 1.7;
+    }
+    .letter-sign.visible { opacity: 1; }
+
+    /* cursor */
     .cursor {
       display: inline-block;
       width: 2px;
@@ -145,36 +161,29 @@
       50%       { opacity: 0; }
     }
 
-    /* BOTTOM */
+    /* ── BOTTOM STICKER BAR ── */
     .bottom-area {
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      gap: 12px;
-      padding: 14px 8px 0;
+      gap: 10px;
+      padding: 10px 6px 0;
       flex-shrink: 0;
-      border-top: 1px solid rgba(214,63,123,0.15);
-      margin-top: 6px;
-    }
-
-    .sign-text {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.3rem;
-      color: #555;
-      text-align: right;
-      line-height: 1.5;
+      border-top: 1px solid rgba(214,63,123,0.13);
+      margin-top: 4px;
     }
 
     .sticker-bottom {
-      width: 62px;
+      width: 58px;
       object-fit: contain;
       filter: drop-shadow(0 3px 6px rgba(0,0,0,0.08));
     }
 
     .handle-text {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.1rem;
-      color: #aaa;
+      font-family: 'Lilita One', cursive;
+      font-size: 1rem;
+      color: #c0396d;
+      opacity: 0.75;
     }
   </style>
 </head>
@@ -196,7 +205,7 @@
     <button class="skip-btn" id="skipBtn">Skip ⏭</button>
   </div>
 
-  <!-- SCROLLABLE CONTENT -->
+  <!-- LETTER -->
   <div class="letter-scroll" id="letterScroll">
     <p class="salutation">नमस्ते आंटी जी,</p>
 
@@ -210,15 +219,20 @@
     <div class="para-block" id="p7"><span class="bullet-dot"></span><span class="para-text" id="t7"></span></div>
     <div class="para-block" id="p8"><span class="bullet-dot"></span><span class="para-text" id="t8"></span></div>
     <div class="para-block" id="p9"><span class="bullet-dot"></span><span class="para-text" id="t9"></span></div>
+
+    <!-- Signature inside letter, shows after last para -->
+    <div class="letter-sign" id="letterSign">
+      धन्यवाद,<br/>
+      राकेश
+    </div>
   </div>
 
-  <!-- PERMANENT BOTTOM -->
+  <!-- BOTTOM — only sticker + handle -->
   <div class="bottom-area">
-    <div class="sign-text">Thankyou<br/>@rakesh</div>
     <img class="sticker-bottom"
       src="https://raw.githubusercontent.com/appnazdeek/apology-letter/main/two.png"
       alt="ghost with flower" />
-    <span class="handle-text">@rakeshsingh.tce</span>
+    <span class="handle-text">@rakeshsinghce</span>
   </div>
 
 </div>
@@ -242,6 +256,24 @@
   let typeTimeout = null;
   const scroll = document.getElementById('letterScroll');
 
+  // Track if user has manually scrolled
+  let userScrolled = false;
+  scroll.addEventListener('scroll', () => {
+    // if user scrolled up from bottom, mark as user-controlled
+    const atBottom = scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight < 40;
+    if (!atBottom) {
+      userScrolled = true;
+    } else {
+      userScrolled = false;
+    }
+  });
+
+  function autoScroll() {
+    if (!userScrolled) {
+      scroll.scrollTop = scroll.scrollHeight;
+    }
+  }
+
   function showAllInstant() {
     clearTimeout(typeTimeout);
     isTyping = false;
@@ -253,6 +285,7 @@
       textEl.textContent = parts[i];
       document.getElementById('p' + i).classList.add('visible');
     }
+    document.getElementById('letterSign').classList.add('visible');
   }
 
   function typeParagraph(idx) {
@@ -262,6 +295,7 @@
       const cur = lastText.querySelector('.cursor');
       if (cur) cur.remove();
       document.getElementById('skipBtn').classList.add('hidden');
+      document.getElementById('letterSign').classList.add('visible');
       isTyping = false;
       return;
     }
@@ -280,20 +314,19 @@
         textEl.querySelector('.cursor').insertAdjacentText('beforebegin', fullText[charIdx]);
         charIdx++;
         const ch = fullText[charIdx - 1];
-        const delay = /[।]/.test(ch) ? 200 : /[,]/.test(ch) ? 100 : /[ ]/.test(ch) ? 30 : 42;
+        const delay = /[।]/.test(ch) ? 190 : /[,]/.test(ch) ? 90 : /[ ]/.test(ch) ? 28 : 42;
         typeTimeout = setTimeout(tick, delay);
-        scroll.scrollTop = scroll.scrollHeight;
+        autoScroll();
       } else {
         const cur = textEl.querySelector('.cursor');
         if (cur) cur.remove();
-        typeTimeout = setTimeout(() => typeParagraph(idx + 1), 350);
+        typeTimeout = setTimeout(() => typeParagraph(idx + 1), 320);
       }
     }
     tick();
   }
 
   document.getElementById('skipBtn').addEventListener('click', showAllInstant);
-
   typeParagraph(0);
 </script>
 </body>
