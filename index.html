@@ -98,41 +98,189 @@
       filter: invert(1);
     }
 
-    /* ── PETALS ── */
-    .petals-container {
+    /* ── DYNAMIC BACKGROUNDS ── */
+    .sky-container {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 0;
       overflow: hidden;
+      transition: opacity 0.8s ease;
     }
 
-    .petal {
-      position: absolute;
-      top: -40px;
+    #daySky {
+      opacity: 1;
+    }
+
+    .dark-mode #daySky {
       opacity: 0;
-      animation: floatDown linear infinite;
-      user-select: none;
-      will-change: transform;
     }
 
-    @keyframes floatDown {
+    #nightSky {
+      opacity: 0;
+    }
+
+    .dark-mode #nightSky {
+      opacity: 1;
+    }
+
+    /* DAY SKY */
+    .sun {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 90px;
+      height: 90px;
+      background: radial-gradient(circle, #fff3ca, #fde047);
+      border-radius: 50%;
+      box-shadow: 0 0 50px #fef08a, 0 0 100px rgba(253, 224, 71, 0.6);
+      animation: pulseSun 4s infinite alternate;
+    }
+
+    @keyframes pulseSun {
       0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 0;
-      }
-
-      10% {
-        opacity: 0.6;
-      }
-
-      90% {
-        opacity: 0.4;
+        transform: scale(1);
+        opacity: 0.9;
       }
 
       100% {
-        transform: translateY(110vh) rotate(300deg);
+        transform: scale(1.05);
+        opacity: 1;
+        box-shadow: 0 0 70px #fef08a, 0 0 140px rgba(253, 224, 71, 0.7);
+      }
+    }
+
+    .sun-rays {
+      position: absolute;
+      top: -10%;
+      left: -10%;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background: repeating-conic-gradient(from 0deg, rgba(253, 224, 71, 0.15) 0deg 15deg, transparent 15deg 30deg);
+      animation: spinRays 40s linear infinite;
+      transform-origin: center;
+    }
+
+    @keyframes spinRays {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .breeze {
+      position: absolute;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+      height: 2px;
+      border-radius: 50%;
+      animation: breezeFlow linear infinite;
+    }
+
+    @keyframes breezeFlow {
+      0% {
+        transform: translateX(-20vw);
         opacity: 0;
+      }
+
+      20% {
+        opacity: 1;
+      }
+
+      80% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateX(120vw);
+        opacity: 0;
+      }
+    }
+
+    /* NIGHT SKY */
+    .moon {
+      position: absolute;
+      top: 12%;
+      right: 12%;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #fef3c7;
+      box-shadow: 0 0 30px #fde68a, 0 0 80px rgba(253, 230, 138, 0.5);
+      animation: floatMoon 8s ease-in-out infinite alternate;
+    }
+
+    .moon::after {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 10px;
+      width: 15px;
+      height: 15px;
+      background: rgba(0, 0, 0, 0.08);
+      border-radius: 50%;
+      box-shadow: 20px 10px 0 -3px rgba(0, 0, 0, 0.06), 10px 25px 0 -5px rgba(0, 0, 0, 0.05);
+    }
+
+    @keyframes floatMoon {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-12px) scale(1.02);
+      }
+    }
+
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 5px #fff;
+      animation: twinkle ease-in-out infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0% {
+        opacity: 0.1;
+        transform: scale(0.6);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1.3);
+      }
+    }
+
+    .shooting-star {
+      position: absolute;
+      width: 120px;
+      height: 2px;
+      background: linear-gradient(-45deg, rgba(255, 255, 255, 1), transparent);
+      border-radius: 999px;
+      filter: drop-shadow(0 0 4px #fff);
+      animation: shooting linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes shooting {
+      0% {
+        transform: translate(0, 0) rotate(-45deg);
+        opacity: 0;
+      }
+
+      5% {
+        opacity: 1;
+        width: 120px;
+      }
+
+      20% {
+        opacity: 0;
+        transform: translate(-400px, 400px) rotate(-45deg);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(-1000px, 1000px) rotate(-45deg);
       }
     }
 
@@ -558,7 +706,16 @@
 
   <button class="theme-toggle" id="themeToggle" title="Toggle Theme"></button>
 
-  <div class="petals-container" id="petalsContainer"></div>
+  <!-- DAY SKY -->
+  <div class="sky-container" id="daySky">
+    <div class="sun-rays"></div>
+    <div class="sun"></div>
+  </div>
+
+  <!-- NIGHT SKY -->
+  <div class="sky-container" id="nightSky">
+    <div class="moon"></div>
+  </div>
 
   <!-- INTRO -->
   <div class="screen" id="introScreen">
@@ -666,34 +823,45 @@
       localStorage.setItem('apologyTheme', isDark ? 'dark' : 'light');
     });
 
-    // ── 3. PETALS & INTERACTIVITY ──
-    const petalEmojis = ['🌸', '🌼', '✿', '🌺'];
-    const container = document.getElementById('petalsContainer');
-    for (let i = 0; i < 16; i++) {
-      const p = document.createElement('span');
-      p.className = 'petal';
-      p.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
-      p.style.left = Math.random() * 100 + '%';
-      p.style.fontSize = (0.6 + Math.random() * 0.7) + 'rem';
-      p.style.animationDuration = (7 + Math.random() * 10) + 's';
-      p.style.animationDelay = (Math.random() * 14) + 's';
-      container.appendChild(p);
+    // ── 3. DYNAMIC BACKGROUND EFFECTS ──
+    const daySky = document.getElementById('daySky');
+    const nightSky = document.getElementById('nightSky');
+
+    // Generate Breeze Lines (Day)
+    for (let i = 0; i < 10; i++) {
+      const breeze = document.createElement('div');
+      breeze.className = 'breeze';
+      breeze.style.top = (Math.random() * 80 + 10) + '%';
+      breeze.style.width = (Math.random() * 150 + 80) + 'px';
+      breeze.style.animationDuration = (Math.random() * 6 + 6) + 's';
+      breeze.style.animationDelay = '-' + (Math.random() * 10) + 's';
+      daySky.appendChild(breeze);
     }
 
-    document.addEventListener('mousemove', (e) => {
-      document.querySelectorAll('.petal').forEach(p => {
-        const rect = p.getBoundingClientRect();
-        const dx = e.clientX - (rect.left + rect.width / 2);
-        const dy = e.clientY - (rect.top + rect.height / 2);
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 60) {
-          const moveX = (dx / dist) * -30;
-          p.style.transform = `translate(${moveX}px, 0) scale(1.1) rotate(${Math.random() * 360}deg)`;
-          p.style.transition = 'transform 0.2s ease-out';
-          setTimeout(() => p.style.transform = '', 300);
-        }
-      });
-    });
+    // Generate Twinkling Stars (Night)
+    for (let i = 0; i < 50; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      const size = Math.random() * 3 + 1;
+      star.style.width = size + 'px';
+      star.style.height = size + 'px';
+      star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+      star.style.animationDelay = '-' + (Math.random() * 3) + 's';
+      nightSky.appendChild(star);
+    }
+
+    // Generate Shooting Stars (Night)
+    for (let i = 0; i < 4; i++) {
+      const shootingStar = document.createElement('div');
+      shootingStar.className = 'shooting-star';
+      shootingStar.style.left = (Math.random() * 80 + 20) + '%';
+      shootingStar.style.top = (Math.random() * 40 - 10) + '%';
+      shootingStar.style.animationDuration = (Math.random() * 4 + 4) + 's';
+      shootingStar.style.animationDelay = '-' + (Math.random() * 10) + 's';
+      nightSky.appendChild(shootingStar);
+    }
 
     document.querySelectorAll('.intro-ghost, .sticker-top, .sticker-bottom, .outro-ghost').forEach(ghost => {
       ghost.addEventListener('click', function (e) {
